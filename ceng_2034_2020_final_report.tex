@@ -1,0 +1,122 @@
+\documentclass[onecolumn]{article}
+%\usepackage{url}
+%\usepackage{algorithmic}
+\usepackage[a4paper]{geometry}
+\usepackage{datetime}
+\usepackage[margin=2em, font=small,labelfont=it]{caption}
+\usepackage{graphicx}
+\usepackage{mathpazo} % use palatino
+\usepackage[scaled]{helvet} % helvetica
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{subfigure}
+% Letterspacing macros
+\newcommand{\spacecaps}[1]{\textls[200]{\MakeUppercase{#1}}}
+\newcommand{\spacesc}[1]{\textls[50]{\textsc{\MakeLowercase{#1}}}}
+
+\title{\spacecaps{Assignment Report 1: Process and Thread Implementation}\\ \normalsize \spacesc{CENG2034, Operating Systems} }
+
+\author{Murat Gun\\muratgun@posta.mu.edu.tr\\
+github.com/desxz/ceng\_2034\_2020\_final}
+%\date{\today\\\currenttime}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+\par The technology is developing, the needs have increased. In line with these needs, computer hardware has also developed and took the form we use today. The development of processor and operating system architectures respond to the needs of the age.
+\end{abstract}
+
+
+\section{Introduction}
+
+The aim of this report is to learn how to make our applications more efficient by using multi-thread, multi-process, and also to follow the stable and synchronous operation of a running process.
+
+
+\section{Assignments}
+In this project, multi-processing and multi-threading usage were made using Python. At the same time, an ancestor and child process were created and their synchronous operation was provided.
+
+\subsection{What is used in the project\\}
+
+\subsubsection{Which kernel and system version used in the project}
+System Version: Ubuntu 20.04 (Virtual Box)\\
+Kernel Version: Linux 5.4
+
+\subsubsection{Which language and version used in the project}
+Python 3.8\\
+PyCharm Community Edition 2020.1.1
+
+\subsubsection{Libraries}
+\textbf{os}, this module provides a portable way of using operating system dependent functionality. \\
+\textbf{hashlib}, this module implements a common interface to many different secure hash and message digest algorithms.\\
+\textbf{time}, this module provides various time-related functions.\\
+\textbf{threading}, this module constructs higher-level threading interfaces on top of the lower level thread module. \\
+\textbf{requests}, the requests library is the defacto standard for making HTTP requests in Python.\\
+\textbf{signal}, this module provides mechanisms to use signal handlers in Python.\\
+
+\subsection{Problems and Solves\\}
+
+\subsubsection{Create a new child process with syscall and print its PID.}
+I used the \textbf{.fork()} function in the \textbf{os} library to create a child process. With this function, if the child whose pid (process id) is equal to 0 is not the process, it is the parent process.
+I used the \textbf{.getpid()} function in the \textbf{os} library to write the process id of the child process.
+
+
+\subsubsection{With the child process, download the files via the given URL list.}
+I used the \textbf{requests} library to download the pictures in the given urls. I made the download process in the content named \textbf{download-file()}.
+To do the download process with the child process, I wrote the \textbf{download-file()} function under the \textbf{os.getpid()} function under the child process block, so that the child process made the download process.
+
+
+\subsubsection{How can you avoid the orphan process situation with syscall?}
+I wrote the \textbf{os.wait()} command under the parent process block for the parent process to wait for the child process, this command keeps the process open and kept waiting for it to be closed at any time. After the child process is over, I closed the parent process and ended the program using the command \textbf{os.kill(pid (parent process), signal.SIGTERM)}. 
+In this way, I solved the problem of orphan process.
+
+
+\subsubsection{Control duplicate files within the downloaded files of your python code.}
+At this stage, I used the names of the pictures I downloaded as numbers such as 0,1,2,3,4 for convenience. I first checked the downloaded images with the \textbf{findDuplicates()} function. 
+After getting the correct results in these controls, I wrote this function using multithreading and multiprocessing. While writing multithreading is very easy, it took me a long time to write using multiprocessing. This is because I could not write and compare the hash of the pictures in an array because of the synchronous operation in the multiprocessing function. When all the processes were written at the same time and tried to check at the same time, the result returned an empty array. 
+For this reason, I split the multiprocessing part into 2 parts and first put the hash of the pictures into an array, and I did this under the \textbf{takegethash()} function. Then, I checked the hash in the array I wrote using the \textbf{duplicateFinder()} function in accordance with multiprocessing. I wrote the multi Process \textbf{findDuplicates()} function to use this function as multiprocess.
+
+
+\section{Results}
+
+\begin{center}
+    \includegraphics[width=.9\textwidth]{TEst.PNG}\\
+    Multiprocess and Multithread Run Times
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Multiprocess.png}\\
+    Multiprocess Using
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+    \includegraphics[width=.9\textwidth]{multithread.png}\\
+    Multithread Using
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+    \includegraphics[width=1.\textwidth]{Screenshot from 2020-06-07 15-45-04.png}\\
+    PyCharm Output
+\end{center}
+
+
+
+
+\section{Conclusion}
+
+As a result, multi-thread and multi-process are different. They can be used effectively in Unix-based operating systems. They have advantages over each other in different transactions. The purpose of using multiprocessing in this project is that it is 1 process that compares each picture with other pictures, providing optimum working time. When we do the same with threading, we witness a more unstable working schedule. In addition, the parent process running on a child process should not stop before the child process is finished. This prevents the program from running stable.
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
+
